@@ -2,15 +2,15 @@ import { PrismaClient } from "../../generated/prisma/client.js";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PORT } from "./env.js";
 
-const adapter= new PrismaPg({
+export const adapter= new PrismaPg({
     connectionString: PORT.databaseUrl,
 })
 
-const prisma = new PrismaClient({
+export const prisma = new PrismaClient({
     adapter,
 })
 
- export async function connectDatabase() {
+export async function connectDatabase() {
 
     try{
         await prisma.$connect();
@@ -18,7 +18,7 @@ const prisma = new PrismaClient({
 
     }catch(error){
         console.error("Database failed to connect: ", error)
-        process.exit()
+        process.exit(1)
 
     }
  }
