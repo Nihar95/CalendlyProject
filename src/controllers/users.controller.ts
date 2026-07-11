@@ -13,3 +13,8 @@ export async function findUserById(req: Request, res: Response){
     res.json(response)
 
 }
+
+export async function createUser(req: Request, res: Response){
+
+    res.json({});
+}
