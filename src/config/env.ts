@@ -7,4 +7,5 @@ export const PORT = {
   nodeEnv: process.env.NODE_ENV || "development",
   databaseUrl: process.env.DATABASE_URL || '',
   DATABASE_URL: "postgresql://postgres:postgres@localhost:5433/calendly_db?schema=public",
+  NODE_ENV: process.env.NODE_ENV||"development"
 };

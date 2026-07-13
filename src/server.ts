@@ -1,7 +1,6 @@
 import {app} from "./app.js";
 import { connectDatabase } from "./config/database.js";
 import { PORT } from "./config/env.js";
-import { getAllUsers } from "./repository/user.repository.js";
 
 export const startServer = async () => {
   await connectDatabase();
