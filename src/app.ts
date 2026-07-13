@@ -1,6 +1,7 @@
 import express, { NextFunction } from "express";
 import { userRouter } from "./routers/user.router.js";
 import { errorHandler } from "./middlewares/error-handler.js";
+import { routerNotFound } from "./middlewares/route-not-found.js";
 
 const app: express.Application = express();
 
@@ -36,5 +37,6 @@ app.get("/health", (_req, res) => {
 
 // Express based routes
 app.use('/api/users',userRouter); // if the route starts with /users , userRouter will handle those requests 
+app.use(routerNotFound)
 app.use(errorHandler)   // added errorhandler based middleware
 export { app };
