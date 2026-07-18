@@ -8,3 +8,10 @@ export const createUserSchema= z.object({
 })
 
 export type CreateUserDto= z.infer<typeof createUserSchema>
+
+export const updateUserSchema= createUserSchema.partial().refine(
+    (data)=> Object.keys(data).length > 0,
+    { message: "At least one field must be provided" }
+)
+
+export type UpdateUserDto= z.infer<typeof updateUserSchema>
