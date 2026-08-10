@@ -93,5 +93,5 @@ export async function checkSlugAvailability(hostId: number, slug: string){
         }
     })
 
-    return exsistingEventType !== null
+    return exsistingEventType === null
 }

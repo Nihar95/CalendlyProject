@@ -32,6 +32,8 @@ export async function updateEventType(hostId: number, id: number, data: UpdateEv
         throw forbidden("You are not authorized to update this event type");
     }
 
+    console.log("data: ", data);
+    console.log("event: ", eventType)
     if(data.slug && data.slug !== eventType.slug){
         const existing = await findByHostandSlug(hostId, data.slug);
         if(existing){

@@ -13,35 +13,122 @@ datasource db {
 }
 
 model User {
-  id         Int         @id @default(autoincrement())
-  email      String      @unique
-  name       String
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  password   String?
-  eventTypes EventType[]
+  id                    Int                    @id @default(autoincrement())
+  email                 String                 @unique
+  name                  String
+  slug                  String                 @unique
+  timezone              String                 @default("UTC")
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  password              String?
+  eventTypes            EventType[]
+  availabilityRule      AvailablityRule[]
+  availabilityException AvailablityException[]
+  slot                  Slot[]
+  hostBookings          Bookings[]             @relation("HostBookings")
 
   @@map("Users")
 }
 
 //User has many event Types and eventType belongs to a user (one to many relation)
 model EventType {
-  id                  Int      @id @default(autoincrement())
+  id                  Int        @id @default(autoincrement())
   hostId              Int
   title               String
   description         String?
   durationInMins      Int
-  slug                String   @unique
-  isActive            Boolean  @default(true)
-  locationType        String   @default("online")
+  slug                String     @unique
+  isActive            Boolean    @default(true)
+  locationType        String     @default("online")
   locationValue       String?
-  bufferBeforeMinutes Int      @default(0)
-  bufferAfterMinutes  Int      @default(0)
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  bufferBeforeMinutes Int        @default(0)
+  bufferAfterMinutes  Int        @default(0)
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  slot                Slot[]
+  bookings            Bookings[]
 
   host User @relation(fields: [hostId], references: [id], onDelete: Cascade)
 
   @@unique([hostId, slug])
   @@map("event_types")
+}
+
+model AvailablityRule {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  weekday   String
+  startTime String
+  endTime   String
+  timezone  String   @default("UTC")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  host User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, weekday])
+  @@map("availablity_rules")
+}
+
+model AvailablityException {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  date      DateTime @db.Date
+  type      String
+  startTime String?
+  endTime   String?
+  timezone  String   @default("UTC")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  reason    String?
+
+  host User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@map("availablity_exceptions")
+}
+
+model Slot {
+  id          Int        @id @default(autoincrement())
+  hostId      Int
+  eventTypeId Int
+  startAt     DateTime
+  endAt       DateTime
+  status      String     @default("AVAILABLE")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  bookings    Bookings[]
+
+  host      User      @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  eventType EventType @relation(fields: [eventTypeId], references: [id], onDelete: Cascade)
+
+  @@unique([eventTypeId, startAt, endAt])
+  @@index([hostId, startAt])
+  @@index([eventTypeId, startAt, status])
+  @@map("slots")
+}
+
+model Bookings {
+  id              Int       @id @default(autoincrement())
+  hostId          Int
+  eventTypeId     Int
+  slotId          Int
+  inviteeEmail    String
+  inviteeNote     String?
+  inviteeName     String
+  status          String    @default("PENDING")
+  meetLink        String?
+  calenderEventId String?
+  canceledAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  host      User      @relation("HostBookings", fields: [hostId], references: [id], onDelete: Cascade)
+  eventType EventType @relation(fields: [eventTypeId], references: [id], onDelete: Cascade)
+  slot      Slot      @relation(fields: [slotId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([inviteeEmail])
+  @@index([hostId, createdAt])
+  @@map("bookings")
 }
