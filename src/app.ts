@@ -1,5 +1,7 @@
 import express, { NextFunction } from "express";
 import { userRouter } from "./routers/user.router.js";
+import { eventTypeRouter } from "./routers/event-type.router.js";
+import { publicEventRouter } from "./routers/public-event.router.js";
 import { errorHandler } from "./middlewares/error-handler.js";
 import { routerNotFound } from "./middlewares/route-not-found.js";
 
@@ -37,6 +39,8 @@ app.get("/health", (_req, res) => {
 
 // Express based routes
 app.use('/api/users',userRouter); // if the route starts with /users , userRouter will handle those requests 
+app.use('/api/event-types', eventTypeRouter);
+app.use('/api/public/event-types', publicEventRouter);
 app.use(routerNotFound)
 app.use(errorHandler)   // added errorhandler based middleware
 export { app };
