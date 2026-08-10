@@ -10,7 +10,7 @@ export const createEventTypeSchema= z.object({
     locationValue: z.string().optional(),
     bufferBeforeMinutes: z.number().min(0).max(120).default(0),
     bufferAfterMinutes: z.number().min(0).max(120).default(0),
-    slug: z.string().min(1).max(100)
+    slug: z.string().max(100).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).optional(),
 
 })
 export const updateEventTypeSchema= createEventTypeSchema.partial()
