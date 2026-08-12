@@ -95,3 +95,14 @@ export async function checkSlugAvailability(hostId: number, slug: string){
 
     return exsistingEventType === null
 }
+
+export async function findActiveEventTypesByHost(hostId: number){
+    const eventTypes= await prisma.eventType.findMany({
+        where: {
+            hostId,
+            isActive: true
+        }
+    })
+
+    return eventTypes
+}

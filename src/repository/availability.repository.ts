@@ -39,7 +39,7 @@ export async function createRule(userId: number, data: CreateAvailabilityRuleDto
 
 export async function updateRule(id: number, data: UpdateAvailabilityRuleDto) {
     const { isActive: _isActive, weekday, ...rest } = data;
-    return prisma.availablityRule.update({
+    return prisma.availablityRule.update( {
         where: { id },
         data: {
             ...rest,
